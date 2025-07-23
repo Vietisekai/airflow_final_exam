@@ -14,4 +14,4 @@ in the datasets.
 
 PS: Hình như file SqlQueries đang bị lỗi ở đoạn không insert được data vào bảng songplays nhưng em chưa fix được :(, DAG cứ chạy đến đoạn check cuối là fail vì k có data.
 
-Update: Em đã fix được lỗi này khi sửa file sql_queries.py
+**Update:** Em đã fix được lỗi này khi sửa file sql_queries.py
