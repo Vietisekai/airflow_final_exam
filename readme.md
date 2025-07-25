@@ -1,17 +1,81 @@
-### Practice Final Exam 
 
-#### Project Requirement:
+# 🚀 ETL Pipeline với Apache Airflow & Astro CLI
 
-The startup TuneStream needs an automated system to orchestrate and monitor their data warehouse ETL workflows. 
-*Note:* The pipeline supports two configurations: 
-- Loading data from local storage into a local PostgreSQL database, or 
-- Loading data from Amazon S3 into Amazon Redshift. 
+Dự án này sử dụng **Apache Airflow** để thực hiện pipeline ETL từ dữ liệu JSON sang cơ sở dữ liệu PostgreSQL. Hệ thống chạy trong Docker thông qua **Astro CLI**.
 
-Using Apache Airflow, the ETL pipeline extracts JSON data files, processes, and transforms 
-them, and loads the results into a star-schema relational database according to the chosen setup. 
-After the ETL process is finished, data quality checks are conducted to detect any inconsistencies 
-in the datasets. 
+## 📦 Yêu cầu hệ thống
 
-PS: Hình như file SqlQueries đang bị lỗi ở đoạn không insert được data vào bảng songplays nhưng em chưa fix được :(, DAG cứ chạy đến đoạn check cuối là fail vì k có data.
+Trước khi bắt đầu, hãy đảm bảo bạn đã cài đặt các công cụ sau:
 
-**Update:** Em đã fix được lỗi này khi sửa file sql_queries.py
+- [Docker](https://www.docker.com/products/docker-desktop/)
+- [Astro CLI](https://docs.astronomer.io/astro/install-cli) (Command-line tool để quản lý Airflow)
+
+## 🛠️ Các bước cài đặt và chạy dự án
+
+### 1. Clone và truy cập vào thư mục dự án
+
+```bash
+git clone <repo-url>
+cd <project-folder>
+```
+
+### 2. Khởi chạy môi trường Airflow bằng Astro CLI
+
+```bash
+astro dev start
+```
+
+Lệnh này sẽ:
+
+- Tạo container Docker chạy Airflow (scheduler, webserver, PostgreSQL, etc.)
+- Tự động build project và mount code của bạn vào container
+
+Khi quá trình hoàn tất, bạn có thể truy cập giao diện Airflow tại:
+
+```
+http://localhost:8080
+```
+
+
+---
+
+### 3. Cấu hình kết nối cơ sở dữ liệu (Postgres)
+
+Sau khi truy cập Airflow UI:
+
+1. Vào tab **"Admin" > "Connections"**
+2. Click vào **"+ Add a new connection"**
+3. Tạo một kết nối mới với cấu hình sau:
+
+| Trường            | Giá trị         |
+|-------------------|------------------|
+| **Conn Id**       | `postgres`       |
+| **Conn Type**     | `Postgres`       |
+| **Host**          | `postgres`       |
+| **Schema**        | `postgres`       |
+| **Login**         | `postgres`       |
+| **Password**      | `postgres`       |
+| **Port**          | `5432`           |
+
+
+---
+
+### 4. Kích hoạt và chạy các DAG
+
+#### 4.1 DAG tạo bảng
+
+- Truy cập UI Airflow (`http://localhost:8080`)
+- Bật DAG `create_table_dag`
+- Trigger để chạy DAG
+
+#### 4.2 DAG thực hiện ETL
+
+- Bật DAG `tune_stream_etl`
+- Trigger để chạy DAG này sau khi bảng đã được tạo
+
+---
+
+## ✅ Kết quả 
+
+- Dữ liệu từ file JSON sẽ được đọc và chèn vào bảng staging trong PostgreSQL.
+- Data quality checks thành công và kết thúc DAG.

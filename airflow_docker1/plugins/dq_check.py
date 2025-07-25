@@ -10,6 +10,6 @@ def check_table_counts():
         if result[0] == 0:
             raise ValueError(f"Data quality check failed: {table} is empty!")
         else:
-            print(f"✅ Passed: {table} has {result[0]} records.")
+            print(f"Table check passed: {table} has {result[0]} records.")
     cur.close()
     conn.close()
